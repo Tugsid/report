@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Summer work report on the sendmnoffice / EmployeeControl project, 19 June - 14 August 2026.">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+<title>Report-Tugs-erdene</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Mono&family=PT+Sans:wght@400;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+  :root {
+    --paper:  #fcfbf8;
+    --ink:    #24221f;
+    --ink-2:  #4a4741;
+    --muted:  #7d776e;
+    --rule:   #ddd7cd;
+    --rule-2: #b9b2a6;
+    --accent: #46617f;
+    --serif: "PT Serif", Georgia, "Times New Roman", serif;
+    --sans:  "PT Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono:  "PT Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:  #1a1917;
+      --ink:    #e9e5dd;
+      --ink-2:  #c2bcb1;
+      --muted:  #928b80;
+      --rule:   #35322d;
+      --rule-2: #4f4a43;
+      --accent: #8fa9c2;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:  #1a1917;
+    --ink:    #e9e5dd;
+    --ink-2:  #c2bcb1;
+    --muted:  #928b80;
+    --rule:   #35322d;
+    --rule-2: #4f4a43;
+    --accent: #8fa9c2;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 17.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :root:not([data-lang="mn"]) .mn { display: none; }
+  :root[data-lang="mn"] .en { display: none; }
+
+  .page {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) clamp(1.4rem, 6vw, 2.5rem) 5rem;
+  }
+  /* Text, chart and tables all share the same measure. */
+
+  @media (min-width: 62rem) {
+    /* Longer lines need more leading to stay trackable. */
+    body { font-size: 19px; line-height: 1.75; }
+  }
+
+  /* ---------- header ---------- */
+  .langbar {
+    display: flex; justify-content: flex-end; gap: .9rem;
+    font-family: var(--sans); font-size: .82rem;
+    margin: 0 auto 2.6rem;
+  }
+  .langbar button {
+    border: 0; background: none; padding: 0; cursor: pointer;
+    font: inherit; color: var(--muted);
+    border-bottom: 1px solid transparent;
+  }
+  .langbar button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--rule-2); }
+  .langbar button:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
+
+  h1 {
+    font-family: var(--serif); font-weight: 700;
+    font-size: clamp(1.9rem, 5vw, 2.4rem); line-height: 1.15;
+    margin: 0 0 .7rem; letter-spacing: -.01em;
+  }
+  .byline {
+    font-family: var(--sans); font-size: .92rem; line-height: 1.6;
+    color: var(--muted); margin: 0 auto 2rem;
+  }
+  .byline b { color: var(--ink-2); font-weight: 400; }
+  .rule { border: 0; border-top: 1px solid var(--rule-2); margin: 0 auto 2.2rem; }
+
+  p { margin: 0 0 1.15rem; }
+  p:last-child { margin-bottom: 0; }
+  .lead { font-size: 1.02em; }
+
+  /* ---------- sections ---------- */
+  section { margin-top: 2.9rem; }
+  h2 {
+    font-family: var(--serif); font-weight: 700; font-size: 1.14rem;
+    line-height: 1.35; margin: 0 0 .7rem;
+  }
+  h2 .n { color: var(--muted); font-weight: 400; margin-right: .45em; }
+
+  /* ---------- figures ---------- */
+  figure { margin: 2.4rem 0; }
+  figcaption {
+    font-family: var(--sans); font-size: .84rem; line-height: 1.55;
+    color: var(--muted); margin-top: .9rem;
+  }
+  figcaption b { color: var(--ink-2); font-weight: 700; }
+
+  .summary {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--sans); font-size: .93rem;
+  }
+  .summary td { padding: .4rem 0; border-bottom: 1px solid var(--rule); }
+  .summary tr:last-child td { border-bottom: 0; }
+  .summary td + td {
+    text-align: right; font-variant-numeric: tabular-nums;
+    white-space: nowrap; color: var(--ink);
+  }
+  .summary td:first-child { color: var(--ink-2); }
+  .summary .sub { color: var(--muted); }
+
+  .chart-scroll { overflow-x: auto; }
+  svg.activity { display: block; width: 100%; min-width: 420px; height: auto; }
+
+  /* ---------- tables ---------- */
+  .table-scroll { overflow-x: auto; }
+  table.data {
+    border-collapse: collapse; width: 100%; min-width: 430px;
+    font-family: var(--sans); font-size: .88rem;
+  }
+  table.data th, table.data td {
+    text-align: left; padding: .42rem .7rem .42rem 0; vertical-align: top;
+  }
+  table.data th:last-child, table.data td:last-child { padding-right: 0; }
+  table.data thead th {
+    font-weight: 700; color: var(--ink-2);
+    border-bottom: 1px solid var(--rule-2); padding-bottom: .35rem;
+  }
+  table.data tbody td { border-bottom: 1px solid var(--rule); color: var(--ink-2); }
+  table.data tbody tr:last-child td { border-bottom: 1px solid var(--rule-2); }
+  td.n { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--muted); }
+  .closed { color: var(--muted); font-style: italic; }
+
+  code { font-family: var(--mono); font-size: .84em; color: var(--ink-2); word-break: break-word; }
+
+  /* ---------- footnote ---------- */
+  .footnote {
+    margin: 3.2rem auto 0; padding-top: 1.1rem; border-top: 1px solid var(--rule);
+    font-family: var(--sans); font-size: .84rem; line-height: 1.6; color: var(--muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+
+
+<div class="page">
+
+  <div class="langbar" role="group" aria-label="Language">
+    <button type="button" data-set="en" aria-pressed="true">English</button>
+    <button type="button" data-set="mn" aria-pressed="false">Монгол</button>
+  </div>
+
+  <h1>
+    <span class="en">Report-Tugs-erdene</span>
+    <span class="mn">Тайлан-Төгс-Эрдэнэ</span>
+  </h1>
+
+  <p class="byline">
+    <b>Tugs-Erdene Shinelundaa</b><br>
+    <span class="en">sendmnoffice (EmployeeControl) · UAT branch<br>19 June – 14 August 2026</span>
+    <span class="mn">sendmnoffice (EmployeeControl) · UAT салбар<br>2026 оны 6-р сарын 19 – 8-р сарын 14</span>
+  </p>
+
+  <hr class="rule">
+
+  <div class="en">
+    <p class="lead">This is a summary of what I worked on over the summer break on EmployeeControl, the internal HR and office system at Send. All of it is on the UAT branch of <code>baasanjargal.b/sendmnoffice</code>. I worked from a personal branch and merged through review rather than pushing directly, so the list of merge requests at the end is a fairly complete record of the summer.</p>
+  </div>
+  <div class="mn">
+    <p class="lead">Энэ бол зуны амралтын хугацаанд Send-ийн дотоод хүний нөөц, оффисын систем болох EmployeeControl дээр хийсэн ажлын тойм юм. Бүх ажил <code>baasanjargal.b/sendmnoffice</code> төслийн UAT салбар дээр байгаа. Би хувийн салбар дээр ажиллаж, шууд push хийхийн оронд хяналтаар дамжуулан нийлүүлж байсан тул тайлангийн төгсгөлд байгаа merge request-ийн жагсаалт нь зуны ажлын бүрэн бүртгэл болно.</p>
+  </div>
+
+  <figure>
+    <table class="summary">
+      <tbody>
+        <tr>
+          <td><span class="en">Commits</span><span class="mn">Коммит</span></td>
+          <td>80</td>
+        </tr>
+        <tr>
+          <td><span class="en">Distinct changes</span><span class="mn">Давхардалгүй өөрчлөлт</span></td>
+          <td>48</td>
+        </tr>
+        <tr>
+          <td><span class="en">Merge requests</span><span class="mn">Merge request</span></td>
+          <td>19 <span class="sub"><span class="en">(18 merged)</span><span class="mn">(18 committed)</span></span></td>
+        </tr>
+        <tr>
+          <td><span class="en">Days with commits</span><span class="mn">Коммиттой өдөр</span></td>
+          <td>23</td>
+        </tr>
+        <tr>
+          <td><span class="en">Source files changed</span><span class="mn">Өөрчилсөн эх файл</span></td>
+          <td>94</td>
+        </tr>
+        <tr>
+          <td><span class="en">Lines written</span><span class="mn">Бичсэн мөр</span></td>
+          <td>+33,766 <span class="sub">−14,758</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </figure>
+
+  <figure class="wide">
+    <div class="chart-scroll">
+      <svg class="activity" id="activity" viewBox="0 0 700 130" role="img"
+           aria-label="Commits per day between 19 June and 14 August 2026, peaking at 11 commits on 6 July."></svg>
+    </div>
+    <figcaption>
+      <span class="en"><b>Figure 1.</b> Commits per day. The peak of eleven on 6 July is the application-wide redesign; the nine on 11 August are the scheduling module and the dashboard work around it.</span>
+      <span class="mn"><b>Зураг 1.</b> Өдөрт ногдох коммит. 7-р сарын 6-ны 11 коммит нь бүх хуудасны дизайны шинэчлэл, 8-р сарын 11-ний 9 коммит нь хуваарийн модуль болон түүнтэй холбоотой хяналтын самбарын ажил.</span>
+    </figcaption>
+  </figure>
+
+  <section>
+    <h2><span class="n">1.</span><span class="en">The look of the application</span><span class="mn">Системийн харагдац</span></h2>
+    <div class="en">
+      <p>The redesign was the biggest single thing I did this summer. It started narrow — I rebuilt the login page at the end of June, then made the rest of the pages send signed-out visitors back to it. In July I went through the whole application in one pass, roughly fifty pages: the layout, the dashboard, time tracking, salary, requests and the reports.</p>
+      <p>By August that had turned into a proper shared stylesheet, with the icons declared in one place instead of pasted into each view. Most of the 6,400 lines of CSS I wrote this summer come from that. The master layout ended up being the file I touched most often, twenty-eight times.</p>
+    </div>
+    <div class="mn">
+      <p>Дизайны шинэчлэл бол энэ зуны хамгийн том ажил байлаа. Эхэндээ жижиг хүрээнд эхэлсэн — 6-р сарын сүүлээр нэвтрэх хуудсыг шинээр хийж, дараа нь бусад хуудсыг нэвтрээгүй хэрэглэгчийг тэр рүү буцаадаг болгосон. 7-р сард системийн бүх хуудсыг — ойролцоогоор тавин хуудсыг — нэг удаагийн ажлаар дайрч гарсан: layout, хяналтын самбар, цаг бүртгэл, цалин, хүсэлт, тайлан.</p>
+      <p>8-р сар гэхэд энэ нь жинхэнэ нэгдсэн stylesheet болж, айкон бүр хуудас тус бүрд хуулагдахаа больж нэг дор зарлагдсан. Зуны хугацаанд бичсэн 6,400 мөр CSS-ийн ихэнх нь эндээс гарсан. Ерөнхий layout нь миний хамгийн олон удаа, хорин найман удаа өөрчилсөн файл болов.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">2.</span><span class="en">Time tracking and attendance</span><span class="mn">Цаг бүртгэл, ирц</span></h2>
+    <div class="en">
+      <p>Requests on the employee time page are now colour-coded: yellow while they wait, green once approved, red if declined. That was the change people noticed most. I also redesigned the attendance calendar, and in August redid the lower part of it.</p>
+      <p>On the reporting side I fixed the total row and changed hours from truncated to rounded, which had been quietly making reported time wrong. I connected the face-recognition terminals to the time report, along with business trips and public holidays — and holidays can now be entered from the site rather than directly in the database.</p>
+    </div>
+    <div class="mn">
+      <p>Ажилтны цагийн хуудсан дээрх хүсэлтүүд одоо өнгөөр ялгагдана: хүлээгдэж байгаа нь шар, зөвшөөрөгдсөн нь ногоон, татгалзсан нь улаан. Үүнийг хүмүүс хамгийн их анзаарсан. Мөн ирцийн календарийг шинэчилж, 8-р сард доод хэсгийг нь дахин хийсэн.</p>
+      <p>Тайлангийн талд "нийт" мөрийг зассан, мөн цагийг таслахын оронд бөөрөнхийлдөг болгосон — энэ нь тайлант цагийг чимээгүйхэн буруу харуулж байсан юм. Царай таних төхөөрөмжүүдийг цагийн тайланд холбож, түүнчлэн томилолт, нийтийн амралтыг оруулсан. Одоо нийтийн амралтыг өгөгдлийн сан дээр биш, вэбээс шууд нэмж болно.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3.</span><span class="en">Work schedules and shifts</span><span class="mn">Ажлын хуваарь, ээлж</span></h2>
+    <div class="en">
+      <p>This was the one module I built from scratch: a controller, its two views, a model and its own menu, with shifts and working-hour windows behind it and four database migrations to support them. I fixed branch scheduling and opened the view to the HR team so they could look at it themselves instead of asking for exports.</p>
+      <p>Along the way I built two reusable time pickers, which replaced the ad-hoc time inputs that had accumulated in different corners of the app.</p>
+    </div>
+    <div class="mn">
+      <p>Энэ бол миний эхнээс нь бүтээсэн цорын ганц модуль: controller, хоёр view, model, өөрийн цэстэй бөгөөд ард нь ээлж, ажлын цагийн хүрээ, тэдгээрийг тулгуурлах дөрвөн migration байгаа. Салбарын хуваарийг зассан, мөн ХН-ийн багт харах эрх нээснээр тэд export гуйхын оронд өөрсдөө хардаг болсон.</p>
+      <p>Замдаа дахин ашиглах боломжтой хоёр цаг сонгогч хийсэн бөгөөд эдгээр нь аппын янз бүрийн буланд хуримтлагдсан цаг оруулах талбаруудыг орлосон.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4.</span><span class="en">Requests and approvals</span><span class="mn">Хүсэлт, батламж</span></h2>
+    <div class="en">
+      <p>I added Card as a third payment method next to cash and digital cash, with a field for the account holder's name and a filter on the request list by payment method, plus export on payment requests and import on the salary page.</p>
+      <p>The change I think matters most here is a small one. When someone edits a request that has been declined, it no longer goes back to looking new — it now says it was fixed, so the approver can see that something actually changed. In the same spirit, incident state changes are kept as history rather than overwritten.</p>
+    </div>
+    <div class="mn">
+      <p>Бэлэн болон цахим мөнгөний хажууд гурав дахь төлбөрийн хэлбэр болгож Карт нэмсэн. Үүнд данс эзэмшигчийн нэрийн талбар, хүсэлтийн жагсаалтыг төлбөрийн хэлбэрээр шүүх шүүлтүүр, төлбөрийн хүсэлт дээр export, цалингийн хуудсан дээр import багтсан.</p>
+      <p>Энд миний бодлоор хамгийн чухал өөрчлөлт нь жижиг зүйл. Татгалзсан хүсэлтийг засахад тэр нь дахин "шинэ" мэт харагдахаа больж, "засварласан" гэж бичигддэг болсон. Ингэснээр батлагч хүн юу нэгэн өөрчлөгдсөнийг харна. Мөн үүнтэй адилаар инцидентийн төлөвийн өөрчлөлт дарагдахгүй, түүх болон хадгалагддаг болсон.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">5.</span><span class="en">Employee records</span><span class="mn">Ажилтны бүртгэл</span></h2>
+    <div class="en">
+      <p>In my last week I gave the employee questionnaire real tables and a structured export, replacing a much thinner form, and reworked the employee info screens and the document handling behind them. I added the arrivals and departures view for branch employees at the same time.</p>
+      <p>Earlier, in July, I had improved the PDF viewer so that it scales to the window and you can click the page to move to the next one.</p>
+    </div>
+    <div class="mn">
+      <p>Сүүлийн долоо хоногтоо ажилтны анкетад жинхэнэ хүснэгт, бүтэцтэй export өгч, өмнөх маш хялбар маягтыг орлуулсан. Мөн ажилтны мэдээллийн хуудсууд болон тэдний ард ажилладаг файл боловсруулалтыг дахин хийсэн. Үүнтэй зэрэг салбарын ажилчдын ирсэн, явсан бүртгэлийн хуудсыг нэмсэн.</p>
+      <p>Түүнээс өмнө, 7-р сард, PDF үзүүлэгчийг сайжруулж, цонхны хэмжээнд тохирон томордог, хуудас дээр дарахад дараагийнх руу шилждэг болгосон.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">6.</span><span class="en">Fixes and compatibility</span><span class="mn">Засвар, нийцтэй байдал</span></h2>
+    <div class="en">
+      <p>A number of things turned out to be broken only in Safari, including the salary import, so I tracked those down. I reworked the password-change flow and cleared out the leftover local data behind it, and went through the Mongolian labels across the app — weekday names, gender, the close button.</p>
+      <p>Twice I got a fix wrong and reverted it rather than patching over the mistake. Both reverts are in the merge request list below.</p>
+    </div>
+    <div class="mn">
+      <p>Хэд хэдэн зүйл зөвхөн Safari дээр эвдэрсэн байсныг олж зассан, үүнд цалингийн import багтана. Нууц үг солих урсгалыг дахин хийж, ард нь үлдсэн локал өгөгдлийг цэвэрлэсэн. Мөн апп даяарх монгол нэршлийг цэгцэлсэн — гарагийн нэр, хүйс, хаах товч.</p>
+      <p>Хоёр удаа засвар маань буруу болсныг нөхөж засахын оронд буцаасан. Хоёулаа доорх merge request-ийн жагсаалтад байгаа.</p>
+    </div>
+  </section>
+
+  <figure class="wide">
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th><span class="en">Migration</span><span class="mn">Migration</span></th>
+            <th><span class="en">What it adds</span><span class="mn">Юу нэмдэг</span></th>
+            <th><span class="en">Date</span><span class="mn">Огноо</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="n">0001</td><td><code>CreateEmployeeWorkSchedule</code></td><td><span class="en">Work-schedule table</span><span class="mn">Хуваарийн хүснэгт</span></td><td class="n">08-10</td></tr>
+          <tr><td class="n">0002</td><td><code>AddOfficeShifts</code></td><td><span class="en">Office shifts</span><span class="mn">Оффисын ээлж</span></td><td class="n">08-10</td></tr>
+          <tr><td class="n">0002</td><td><code>AddWorkHoursWindow</code></td><td><span class="en">Working-hours window</span><span class="mn">Ажлын цагийн хүрээ</span></td><td class="n">08-10</td></tr>
+          <tr><td class="n">0003</td><td><code>AddIsActiveToInternalOrder</code></td><td><span class="en">Active flag on internal orders</span><span class="mn">Дотоод захиалгын идэвхтэй төлөв</span></td><td class="n">08-10</td></tr>
+          <tr><td class="n">0004</td><td><code>WidenBookingDescription</code></td><td><span class="en">Longer booking descriptions</span><span class="mn">Урт тайлбар</span></td><td class="n">08-11</td></tr>
+          <tr><td class="n">0005</td><td><code>AddFullAnketTables</code></td><td><span class="en">Full questionnaire schema</span><span class="mn">Анкетын бүрэн бүтэц</span></td><td class="n">08-12</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>
+      <span class="en"><b>Table 1. Added files.</b> The six database migrations I added, all additive and run through the project's migration runner rather than applied by hand.</span>
+      <span class="mn"><b>Хүснэгт 1. Нэмсэн файлууд.</b> Миний нэмсэн зургаан migration — бүгд нэмэгдүүлэх шинжтэй, гараар биш төслийн migration runner-ээр ажилладаг.</span>
+    </figcaption>
+  </figure>
+
+  <figure class="wide">
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>MR</th>
+            <th><span class="en">Title</span><span class="mn">Гарчиг</span></th>
+            <th><span class="en">Opened</span><span class="mn">Нээсэн</span></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="mrbody"></tbody>
+      </table>
+    </div>
+    <figcaption>
+      <span class="en"><b>Table 2. Committed things.</b> All nineteen merge requests, newest first. Number 158 was closed in favour of a corrected version rather than merged.</span>
+      <span class="mn"><b>Хүснэгт 2. Коммит хийсэн зүйлс.</b> Бүх 19 merge request, шинэ нь эхэндээ. 158 дугаартай нь merge хийгдэлгүй, зассан хувилбарын төлөө хаагдсан.</span>
+    </figcaption>
+  </figure>
+
+  <p class="footnote">
+    <span class="en">The figures come from the GitLab history of the project on the UAT branch, counting only commits I authored between 19 June and 14 August 2026. Sixteen of the eighty commits are merge commits, and some work shows up twice where it was re-pushed between branches, so the line counts are based on the 48 distinct changes and leave out build output, images, fonts and third-party libraries.</span>
+    <span class="mn">Тоон үзүүлэлтийг төслийн UAT салбарын GitLab түүхээс авсан бөгөөд зөвхөн 2026 оны 6-р сарын 19-нөөс 8-р сарын 14-ний хооронд миний хийсэн коммитыг тооцсон. 80 коммитын 16 нь merge коммит бөгөөд зарим ажил салбар хооронд дахин push хийгдсэн тул давхардаж харагддаг. Иймд мөрийн тоог 48 давхардалгүй өөрчлөлт дээр үндэслэж, build файл, зураг, фонт, гуравдагч талын сангуудыг хассан болно.</span>
+  </p>
+
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var buttons = Array.prototype.slice.call(document.querySelectorAll('.langbar button'));
+
+    var mrs = [
+      [180, 'Calendariin dood taliin design', '08-12', 1],
+      [179, 'Revert "IndexTimeReport niit-iig zassan ni."', '08-11', 1],
+      [174, 'fix: eeljiin amralt chuluu deer nemegdej bga', '08-11', 1],
+      [173, 'Shine UI + requests', '08-10', 1],
+      [170, 'Revert "IndexTimeReport niit-iig zassan ni."', '08-03', 1],
+      [169, 'safari, tsalin deer import.', '07-30', 1],
+      [166, 'PaymentRequestIndex Nemehig zassan', '07-24', 1],
+      [163, 'card, account holder etc.', '07-21', 1],
+      [159, 'buh pagenuudin designig uurcilsun, hunii nuuts ertsiin tailand yum nemsen.', '07-06', 1],
+      [158, 'IndexTimeReport.cshtml iin "niit"-iig zassan ni.', '07-06', 0],
+      [157, 'Change in TimeReportController.cs and more', '07-06', 1],
+      [149, 'Login page renewed.', '07-01', 1],
+      [146, 'TimeTelleriig ni solitson', '06-30', 1],
+      [145, 'June 30th', '06-30', 1],
+      [143, 'okay', '06-30', 1],
+      [141, 'Update 2 files', '06-29', 1],
+      [140, 'home page iig ni hiitsen.', '06-25', 1],
+      [139, '"xaax" zassan', '06-24', 1],
+      [138, 'Tugs', '06-24', 1]
+    ];
+
+    function renderMRs() {
+      var mn = root.getAttribute('data-lang') === 'mn';
+      var merged = mn ? 'committed' : 'merged';
+      var closed = 'closed';
+      document.getElementById('mrbody').innerHTML = mrs.map(function (m) {
+        var esc = m[1].replace(/&/g, '&amp;').replace(/</g, '&lt;');
+        var state = m[3] ? merged : '<span class="closed">' + closed + '</span>';
+        return '<tr><td class="n">!' + m[0] + '</td><td>' + esc + '</td><td class="n">' + m[2] +
+          '</td><td>' + state + '</td></tr>';
+      }).join('');
+    }
+
+    /* ---------- activity chart ---------- */
+    var counts = {
+      '2026-06-19':1,'2026-06-24':3,'2026-06-25':1,'2026-06-29':1,'2026-06-30':4,
+      '2026-07-01':2,'2026-07-03':5,'2026-07-06':11,'2026-07-07':4,'2026-07-09':1,
+      '2026-07-20':3,'2026-07-21':3,'2026-07-22':5,'2026-07-23':2,'2026-07-24':2,
+      '2026-07-27':4,'2026-07-29':2,'2026-07-30':4,'2026-08-03':3,'2026-08-10':5,
+      '2026-08-11':9,'2026-08-12':3,'2026-08-14':2
+    };
+    var days = [];
+    for (var d = new Date(Date.UTC(2026, 5, 19)); d <= new Date(Date.UTC(2026, 7, 14)); d.setUTCDate(d.getUTCDate() + 1)) {
+      var key = d.toISOString().slice(0, 10);
+      days.push({ key: key, n: counts[key] || 0 });
+    }
+
+    var W = 700, H = 130, padL = 20, padR = 4, padT = 12, padB = 22;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var max = 11, slot = plotW / days.length, bw = Math.max(3, slot * 0.58);
+    var svg = document.getElementById('activity');
+    var base = [];
+
+    base.push('<line x1="' + padL + '" y1="' + (padT + plotH) + '" x2="' + (W - padR) +
+      '" y2="' + (padT + plotH) + '" stroke="var(--rule-2)" stroke-width="1"/>');
+    [5, 10].forEach(function (t) {
+      var y = padT + plotH - (t / max) * plotH;
+      base.push('<line x1="' + padL + '" y1="' + y.toFixed(1) + '" x2="' + (W - padR) +
+        '" y2="' + y.toFixed(1) + '" stroke="var(--rule)" stroke-width="1"/>');
+      base.push('<text x="' + (padL - 5) + '" y="' + (y + 3).toFixed(1) +
+        '" text-anchor="end" fill="var(--muted)" font-family="PT Sans, sans-serif" font-size="9">' + t + '</text>');
+    });
+
+    days.forEach(function (day, i) {
+      if (!day.n) return;
+      var x = padL + i * slot + (slot - bw) / 2;
+      var h = (day.n / max) * plotH;
+      base.push('<rect x="' + x.toFixed(1) + '" y="' + (padT + plotH - h).toFixed(1) + '" width="' + bw.toFixed(1) +
+        '" height="' + h.toFixed(1) + '" fill="var(--accent)"><title>' + day.key + ' — ' + day.n + '</title></rect>');
+    });
+
+    var marks = [
+      { k: '2026-06-19', en: '19 Jun', mn: '06.19' },
+      { k: '2026-07-06', en: '6 Jul',  mn: '07.06' },
+      { k: '2026-07-22', en: '22 Jul', mn: '07.22' },
+      { k: '2026-08-14', en: '14 Aug', mn: '08.14' }
+    ];
+
+    function drawChart() {
+      var lang = root.getAttribute('data-lang') === 'mn' ? 'mn' : 'en';
+      var axis = marks.map(function (m) {
+        var i = days.findIndex(function (dd) { return dd.key === m.k; });
+        if (i < 0) return '';
+        var x = padL + i * slot + slot / 2;
+        var anchor = i < 3 ? 'start' : (i > days.length - 5 ? 'end' : 'middle');
+        var tx = anchor === 'start' ? padL : (anchor === 'end' ? W - padR : x);
+        return '<text x="' + tx.toFixed(1) + '" y="' + (H - 6) + '" text-anchor="' + anchor +
+          '" fill="var(--muted)" font-family="PT Sans, sans-serif" font-size="9">' + m[lang] + '</text>';
+      }).join('');
+      svg.innerHTML = base.join('') + axis;
+    }
+
+    function setLang(l) {
+      root.setAttribute('data-lang', l);
+      root.setAttribute('lang', l === 'mn' ? 'mn' : 'en');
+      buttons.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.set === l ? 'true' : 'false'); });
+      drawChart();
+      renderMRs();
+      try { localStorage.setItem('report-lang', l); } catch (e) {}
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () { setLang(b.dataset.set); });
+    });
+
+    drawChart();
+    renderMRs();
+    try {
+      var saved = localStorage.getItem('report-lang');
+      if (saved === 'mn' || saved === 'en') setLang(saved);
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>
